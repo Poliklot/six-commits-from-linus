@@ -1,5 +1,5 @@
 import type { GitHubContributor, GitHubRepo, GitHubUser } from "../src/lib/types";
-import { isLikelyBot } from "../src/lib/githubApi";
+import { isLikelyBot, normalizeRepoFullName } from "../src/lib/githubApi";
 
 const GITHUB_API_BASE = "https://api.github.com";
 const token = process.env.GITHUB_TOKEN?.trim();
@@ -100,12 +100,29 @@ export async function getRepository(fullName: string): Promise<GitHubRepo> {
   return githubRequest<GitHubRepo>(`/repos/${fullName}`);
 }
 
-export async function getRepoContributors(fullName: string): Promise<GitHubContributor[]> {
-  const contributors = await githubRequest<GitHubContributor[]>(
-    `/repos/${fullName}/contributors?per_page=100&anon=false`,
-  );
+export async function getRepoContributors(
+  fullName: string,
+  pages = Number(process.env.INDEX_CONTRIBUTOR_PAGES ?? "2"),
+): Promise<GitHubContributor[]> {
+  const repo = normalizeRepoFullName(fullName);
+  const contributors: GitHubContributor[] = [];
+  const seen = new Set<string>();
 
-  return contributors.filter(
-    (contributor) => contributor.login && !isLikelyBot(contributor.login),
-  );
+  for (let page = 1; page <= pages; page += 1) {
+    const pageContributors = await githubRequest<GitHubContributor[]>(
+      `/repos/${repo}/contributors?per_page=100&page=${page}&anon=false`,
+    );
+
+    for (const contributor of pageContributors) {
+      if (!contributor.login || isLikelyBot(contributor.login)) continue;
+      const key = normalizeContributorLogin(contributor.login);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      contributors.push(contributor);
+    }
+
+    if (pageContributors.length < 100) break;
+  }
+
+  return contributors;
 }

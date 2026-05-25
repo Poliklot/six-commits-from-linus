@@ -25,6 +25,22 @@ export function normalizeLogin(login: string): string {
   return login.trim().replace(/^@+/, "").toLowerCase();
 }
 
+export function normalizeRepoFullName(repo: string): string {
+  return repo
+    .trim()
+    .replace(/^https?:\/\/github\.com\//i, "")
+    .replace(/^github\.com\//i, "")
+    .replace(/\.git$/i, "")
+    .replace(/^\/+|\/+$/g, "")
+    .split("/")
+    .slice(0, 2)
+    .join("/");
+}
+
+export function isValidRepoFullName(repo: string): boolean {
+  return /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repo);
+}
+
 export function isLikelyBot(login: string): boolean {
   const normalized = login.toLowerCase();
   return (
@@ -103,10 +119,27 @@ export async function getUserRepos(username: string): Promise<GitHubRepo[]> {
 
 export async function getRepoContributors(
   fullName: string,
+  pages = 1,
 ): Promise<GitHubContributor[]> {
-  return githubRequest<GitHubContributor[]>(
-    `/repos/${fullName}/contributors?per_page=100&anon=false`,
-  ).then((contributors) =>
-    contributors.filter((contributor) => contributor.login && !isLikelyBot(contributor.login)),
-  );
+  const repo = normalizeRepoFullName(fullName);
+  const contributors: GitHubContributor[] = [];
+  const seen = new Set<string>();
+
+  for (let page = 1; page <= pages; page += 1) {
+    const pageContributors = await githubRequest<GitHubContributor[]>(
+      `/repos/${repo}/contributors?per_page=100&page=${page}&anon=false`,
+    );
+
+    for (const contributor of pageContributors) {
+      if (!contributor.login || isLikelyBot(contributor.login)) continue;
+      const key = normalizeLogin(contributor.login);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      contributors.push(contributor);
+    }
+
+    if (pageContributors.length < 100) break;
+  }
+
+  return contributors;
 }

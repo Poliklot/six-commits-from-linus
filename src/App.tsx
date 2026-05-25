@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { ResultCard } from "./components/ResultCard";
 import { SearchForm } from "./components/SearchForm";
+import { BRIDGE_REPOS } from "./data/bridge-repos";
 import { FAMOUS_DEVS } from "./data/famous-devs";
-import { findHandshakePath } from "./lib/findHandshakePath";
-import type { HandshakeResult } from "./lib/types";
+import { searchHandshake } from "./lib/findHandshakePath";
+import type { HandshakeResult, HandshakeSearchOptions } from "./lib/types";
 import "./styles.css";
 
 export function App() {
@@ -11,15 +12,19 @@ export function App() {
   const [result, setResult] = useState<HandshakeResult | null>(null);
 
   const stats = useMemo(() => {
-    const repos = FAMOUS_DEVS.reduce((total, dev) => total + dev.anchorRepos.length, 0);
+    const anchorRepos = FAMOUS_DEVS.reduce((total, dev) => total + dev.anchorRepos.length, 0);
     const categories = new Set(FAMOUS_DEVS.map((dev) => dev.category));
-    return { repos, categories: categories.size };
+    const uniqueRepos = new Set([
+      ...FAMOUS_DEVS.flatMap((dev) => dev.anchorRepos),
+      ...BRIDGE_REPOS.map((repo) => repo.fullName),
+    ]);
+    return { anchorRepos, categories: categories.size, uniqueRepos: uniqueRepos.size };
   }, []);
 
-  async function handleSearch(username: string, famousLogin: string) {
+  async function handleSearch(options: HandshakeSearchOptions) {
     setLoading(true);
     setResult(null);
-    const nextResult = await findHandshakePath(username, famousLogin);
+    const nextResult = await searchHandshake(options);
     setResult(nextResult);
     setLoading(false);
   }
@@ -28,28 +33,32 @@ export function App() {
     <main>
       <section className="hero section-shell">
         <div className="hero__content">
-          <p className="eyebrow">GitHub Handshake MVP</p>
+          <p className="eyebrow">Open-source social graph</p>
           <h1>Six Commits from Linus</h1>
           <p className="hero__subtitle">
-            Find how many open-source degrees separate you from famous GitHub
-            developers.
+            Discover how your public GitHub contribution trail connects to maintainers,
+            language creators, framework authors, and developer-tool builders.
           </p>
           <div className="hero__actions" aria-label="Project facts">
-            <span>{FAMOUS_DEVS.length} famous developers</span>
-            <span>{stats.repos} anchor repositories</span>
-            <span>{stats.categories} categories</span>
+            <span>{FAMOUS_DEVS.length} notable developers</span>
+            <span>{stats.uniqueRepos} indexed repositories</span>
+            <span>{BRIDGE_REPOS.length} bridge repos</span>
           </div>
         </div>
-        <aside className="hero__panel" aria-label="Example result">
-          <p>@akeilajavius</p>
-          <span>→ contributed to</span>
-          <p>example/project</p>
-          <span>→ shared with</span>
-          <p>@middledev</p>
-          <span>→ appears in</span>
-          <p>torvalds/linux</p>
-          <span>→ connected to</span>
-          <p>@torvalds</p>
+        <aside className="hero__panel" aria-label="Example path">
+          <div className="terminal-card">
+            <div className="terminal-card__bar">
+              <span />
+              <span />
+              <span />
+            </div>
+            <pre>{`@you
+  -> prettier/prettier
+@vjeux
+
+1 contributor link
+strong signal`}</pre>
+          </div>
         </aside>
       </section>
 
@@ -58,36 +67,49 @@ export function App() {
         <ResultCard result={result} />
       </section>
 
+      <section className="proof-strip section-shell" aria-label="Built for GitHub public data">
+        <div>
+          <strong>Static by design</strong>
+          <span>Runs on GitHub Pages. No backend, no database, no accounts.</span>
+        </div>
+        <div>
+          <strong>Public data only</strong>
+          <span>Uses repository contributors from the GitHub REST API.</span>
+        </div>
+        <div>
+          <strong>Repo hints</strong>
+          <span>Paste a repo you touched to get sharper, more explainable paths.</span>
+        </div>
+      </section>
+
       <section className="info-grid section-shell" aria-label="How the app works">
         <article>
           <h2>How it works</h2>
           <p>
-            We use public GitHub repository contributor data. You enter your GitHub
-            username, then we compare your public contributor graph with a precomputed
-            graph of famous open-source developers.
+            The app indexes public contributors from high-signal open-source repositories,
+            then searches for paths between your GitHub login and notable developers.
           </p>
         </article>
         <article>
-          <h2>What counts as a handshake?</h2>
+          <h2>Why repo hints help</h2>
           <p>
-            Two users are connected when both appear as contributors of the same public
-            GitHub repository. The MVP searches your public owner repositories and the
-            cached anchor repositories for the selected famous developer.
+            GitHub does not expose a perfect public endpoint for every repository someone
+            has contributed to. A repo hint lets the graph start from a known project like
+            <code> prettier/prettier</code> or <code>vitejs/vite</code>.
           </p>
         </article>
         <article>
-          <h2>Limitations</h2>
+          <h2>Accuracy</h2>
           <p>
-            This is an approximation. It does not use issues, PR reviews, stars,
-            followers, private repositories, OAuth, or full GitHub graph search.
+            Results are approximate and based on contributor windows returned by GitHub.
+            The app does not use private repositories, OAuth scopes, followers, stars,
+            issues, or pull request reviews.
           </p>
         </article>
       </section>
 
       <footer className="footer section-shell">
-        <p>
-          No login. No backend. No database. No tracking. Only public GitHub data.
-        </p>
+        <p>No login. No tracking. Public GitHub data only. Support: support@poliklot.com</p>
         <a href="https://github.com/Poliklot/six-commits-from-linus" target="_blank" rel="noreferrer">
           View on GitHub
         </a>

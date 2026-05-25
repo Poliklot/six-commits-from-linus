@@ -6,7 +6,7 @@ export type FamousDev = {
   notes?: string;
 };
 
-export const FAMOUS_DEVS: FamousDev[] = [
+const CORE_FAMOUS_DEVS: FamousDev[] = [
   {
     login: "torvalds",
     name: "Linus Torvalds",
@@ -323,3 +323,247 @@ export const FAMOUS_DEVS: FamousDev[] = [
     anchorRepos: ["kelseyhightower/kubernetes-the-hard-way", "kubernetes/kubernetes"],
   },
 ];
+
+const ECOSYSTEM_FAMOUS_DEVS: FamousDev[] = [
+  {
+    login: "vjeux",
+    name: "Christopher Chedeau",
+    category: "Prettier / React Native",
+    anchorRepos: ["prettier/prettier", "facebook/react-native"],
+  },
+  {
+    login: "fisker",
+    name: "Fisker Cheung",
+    category: "Prettier",
+    anchorRepos: ["prettier/prettier"],
+  },
+  {
+    login: "sosukesuzuki",
+    name: "Sosuke Suzuki",
+    category: "Prettier",
+    anchorRepos: ["prettier/prettier"],
+  },
+  {
+    login: "jlongster",
+    name: "James Long",
+    category: "JavaScript Tools",
+    anchorRepos: ["prettier/prettier", "jlongster/absurd-sql"],
+  },
+  {
+    login: "lydell",
+    name: "Simon Lydell",
+    category: "Prettier",
+    anchorRepos: ["prettier/prettier"],
+  },
+  {
+    login: "ikatyang",
+    name: "Ika",
+    category: "Prettier",
+    anchorRepos: ["prettier/prettier"],
+  },
+  {
+    login: "hzoo",
+    name: "Henry Zhu",
+    category: "Babel",
+    anchorRepos: ["babel/babel", "prettier/prettier"],
+  },
+  {
+    login: "jridgewell",
+    name: "Justin Ridgewell",
+    category: "JavaScript Tools",
+    anchorRepos: ["babel/babel", "rollup/rollup", "prettier/prettier"],
+  },
+  {
+    login: "asottile",
+    name: "Anthony Sottile",
+    category: "Python / Tooling",
+    anchorRepos: ["pre-commit/pre-commit", "prettier/prettier"],
+  },
+  {
+    login: "MylesBorins",
+    name: "Myles Borins",
+    category: "Node.js",
+    anchorRepos: ["nodejs/node"],
+  },
+  {
+    login: "jasnell",
+    name: "James M Snell",
+    category: "Node.js",
+    anchorRepos: ["nodejs/node"],
+  },
+  {
+    login: "Trott",
+    name: "Rich Trott",
+    category: "Node.js",
+    anchorRepos: ["nodejs/node"],
+  },
+  {
+    login: "orta",
+    name: "Orta Therox",
+    category: "TypeScript",
+    anchorRepos: ["microsoft/TypeScript", "DefinitelyTyped/DefinitelyTyped"],
+  },
+  {
+    login: "weswigham",
+    name: "Wes Wigham",
+    category: "TypeScript",
+    anchorRepos: ["microsoft/TypeScript"],
+  },
+  {
+    login: "ahejlsberg",
+    name: "Anders Hejlsberg",
+    category: "TypeScript",
+    anchorRepos: ["microsoft/TypeScript"],
+  },
+  {
+    login: "orta",
+    name: "Orta Therox",
+    category: "TypeScript",
+    anchorRepos: ["microsoft/TypeScript", "DefinitelyTyped/DefinitelyTyped"],
+  },
+  {
+    login: "ljharb",
+    name: "Jordan Harband",
+    category: "JavaScript Standards",
+    anchorRepos: ["eslint/eslint", "tc39/ecma262", "ljharb/qs"],
+  },
+  {
+    login: "nzakas",
+    name: "Nicholas C. Zakas",
+    category: "ESLint",
+    anchorRepos: ["eslint/eslint"],
+  },
+  {
+    login: "feross",
+    name: "Feross Aboukhadijeh",
+    category: "JavaScript / WebTorrent",
+    anchorRepos: ["webtorrent/webtorrent", "standard/standard", "feross/simple-peer"],
+    notes: "Kept for JavaScript tooling proximity.",
+  },
+  {
+    login: "mojombo",
+    name: "Tom Preston-Werner",
+    category: "GitHub / Jekyll",
+    anchorRepos: ["jekyll/jekyll", "toml-lang/toml"],
+  },
+  {
+    login: "defunkt",
+    name: "Chris Wanstrath",
+    category: "GitHub / Ruby",
+    anchorRepos: ["defunkt/jquery-pjax", "mustache/mustache"],
+  },
+  {
+    login: "wycats",
+    name: "Yehuda Katz",
+    category: "Ruby / Ember",
+    anchorRepos: ["emberjs/ember.js", "rails/rails"],
+  },
+  {
+    login: "jeresig",
+    name: "John Resig",
+    category: "JavaScript",
+    anchorRepos: ["jquery/jquery"],
+  },
+  {
+    login: "fat",
+    name: "Jacob Thornton",
+    category: "Bootstrap",
+    anchorRepos: ["twbs/bootstrap"],
+  },
+  {
+    login: "mdo",
+    name: "Mark Otto",
+    category: "Bootstrap",
+    anchorRepos: ["twbs/bootstrap"],
+  },
+  {
+    login: "sophiebits",
+    name: "Sophie Alpert",
+    category: "React",
+    anchorRepos: ["facebook/react", "reactjs/react.dev"],
+  },
+  {
+    login: "trueadm",
+    name: "Dominic Gannaway",
+    category: "React",
+    anchorRepos: ["facebook/react"],
+  },
+  {
+    login: "TheLarkInn",
+    name: "Sean Larkin",
+    category: "Webpack",
+    anchorRepos: ["webpack/webpack"],
+  },
+  {
+    login: "alexander-akait",
+    name: "Alexandr Akait",
+    category: "Webpack",
+    anchorRepos: ["webpack/webpack", "prettier/prettier"],
+  },
+  {
+    login: "sokra",
+    name: "Tobias Koppers",
+    category: "Webpack",
+    anchorRepos: ["webpack/webpack"],
+  },
+  {
+    login: "bpasero",
+    name: "Benjamin Pasero",
+    category: "VS Code",
+    anchorRepos: ["microsoft/vscode"],
+  },
+  {
+    login: "chrisdias",
+    name: "Chris Dias",
+    category: "VS Code",
+    anchorRepos: ["microsoft/vscode"],
+  },
+  {
+    login: "davidfowl",
+    name: "David Fowler",
+    category: ".NET",
+    anchorRepos: ["dotnet/aspnetcore", "dotnet/runtime"],
+  },
+  {
+    login: "DamianEdwards",
+    name: "Damian Edwards",
+    category: ".NET",
+    anchorRepos: ["dotnet/aspnetcore"],
+  },
+  {
+    login: "matklad",
+    name: "Aleksey Kladov",
+    category: "Rust",
+    anchorRepos: ["rust-lang/rust-analyzer", "rust-lang/rust"],
+  },
+  {
+    login: "withoutboats",
+    name: "Without Boats",
+    category: "Rust",
+    anchorRepos: ["rust-lang/rust"],
+  },
+  {
+    login: "steveklabnik",
+    name: "Steve Klabnik",
+    category: "Rust",
+    anchorRepos: ["rust-lang/rust", "rust-lang/book"],
+  },
+];
+
+const uniqueByLogin = new Map<string, FamousDev>();
+for (const dev of [...CORE_FAMOUS_DEVS, ...ECOSYSTEM_FAMOUS_DEVS]) {
+  const key = dev.login.toLowerCase();
+  const existing = uniqueByLogin.get(key);
+  if (!existing) {
+    uniqueByLogin.set(key, dev);
+  } else {
+    uniqueByLogin.set(key, {
+      ...existing,
+      anchorRepos: Array.from(new Set([...existing.anchorRepos, ...dev.anchorRepos])),
+      notes: existing.notes ?? dev.notes,
+    });
+  }
+}
+
+export const FAMOUS_DEVS: FamousDev[] = Array.from(uniqueByLogin.values());
+
