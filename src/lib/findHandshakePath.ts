@@ -389,13 +389,14 @@ async function candidatesFromRepoHint(
 
   let repoIndex = repoContributors(index, repo);
 
-  try {
+  // Important for GitHub Pages: if the repo is already in the static graph, do not
+  // spend the user's unauthenticated API quota. Live fetching is only a fallback for
+  // custom repositories that are not cached yet.
+  if (!repoIndex) {
     const liveContributors = await getRepoContributors(repo, POWER_REPO_CONTRIBUTOR_PAGES);
     if (liveContributors.length > 0) {
       repoIndex = contributorsToIndexedRepo(liveContributors);
     }
-  } catch (error) {
-    if (!repoIndex) throw error;
   }
 
   if (!repoIndex) {
@@ -476,16 +477,19 @@ export async function searchHandshake(options: HandshakeSearchOptions): Promise<
   }
 
   try {
-    const [index, user] = await Promise.all([loadFamousIndex(), getUser(fromLogin)]);
+    const index = await loadFamousIndex();
+    const hasRepoHint = Boolean(options.contributedRepo?.trim());
+    const user = hasRepoHint ? { login: fromLogin } : await getUser(fromLogin);
+    const displayLogin = user.login;
     const candidates: Candidate[] = [];
 
-    candidates.push(...findDirectCachedCandidates(user.login, index));
+    candidates.push(...findDirectCachedCandidates(displayLogin, index));
 
     if (targetDev) {
       const targetIndex = index.famous[targetLogin!] ?? index.famous[normalizeLogin(targetDev.login)];
       if (targetIndex) {
         const direct = findDirectTargetCandidate(
-          user.login,
+          displayLogin,
           targetDev.login,
           targetDev.name,
           targetDev.category,
@@ -496,9 +500,9 @@ export async function searchHandshake(options: HandshakeSearchOptions): Promise<
     }
 
     if (options.contributedRepo?.trim()) {
-      candidates.push(...(await candidatesFromRepoHint(user.login, options.contributedRepo, index)));
+      candidates.push(...(await candidatesFromRepoHint(displayLogin, options.contributedRepo, index)));
     } else {
-      candidates.push(...(await candidatesFromUserRepos(user.login, index)));
+      candidates.push(...(await candidatesFromUserRepos(displayLogin, index)));
     }
 
     const filtered = targetDev
