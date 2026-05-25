@@ -1,0 +1,325 @@
+export type FamousDev = {
+  login: string;
+  name: string;
+  category: string;
+  anchorRepos: string[];
+  notes?: string;
+};
+
+export const FAMOUS_DEVS: FamousDev[] = [
+  {
+    login: "torvalds",
+    name: "Linus Torvalds",
+    category: "Linux",
+    anchorRepos: ["torvalds/linux", "git/git"],
+  },
+  {
+    login: "gvanrossum",
+    name: "Guido van Rossum",
+    category: "Python",
+    anchorRepos: ["python/cpython"],
+  },
+  {
+    login: "matz",
+    name: "Yukihiro Matsumoto",
+    category: "Ruby",
+    anchorRepos: ["ruby/ruby", "mruby/mruby"],
+  },
+  {
+    login: "dhh",
+    name: "David Heinemeier Hansson",
+    category: "Ruby on Rails",
+    anchorRepos: ["rails/rails", "basecamp/kamal"],
+  },
+  {
+    login: "yyx990803",
+    name: "Evan You",
+    category: "Vue / Vite",
+    anchorRepos: ["vuejs/core", "vuejs/vue", "vitejs/vite"],
+  },
+  {
+    login: "gaearon",
+    name: "Dan Abramov",
+    category: "React",
+    anchorRepos: ["facebook/react", "reduxjs/redux"],
+  },
+  {
+    login: "sebmarkbage",
+    name: "Sebastian Markbåge",
+    category: "React",
+    anchorRepos: ["facebook/react"],
+  },
+  {
+    login: "acdlite",
+    name: "Andrew Clark",
+    category: "React",
+    anchorRepos: ["facebook/react"],
+  },
+  {
+    login: "bvaughn",
+    name: "Brian Vaughn",
+    category: "React",
+    anchorRepos: ["facebook/react", "bvaughn/react-virtualized"],
+  },
+  {
+    login: "Rich-Harris",
+    name: "Rich Harris",
+    category: "Svelte",
+    anchorRepos: ["sveltejs/svelte", "sveltejs/kit"],
+  },
+  {
+    login: "developit",
+    name: "Jason Miller",
+    category: "Preact",
+    anchorRepos: ["preactjs/preact", "developit/htm"],
+  },
+  {
+    login: "mjackson",
+    name: "Michael Jackson",
+    category: "React Router / Remix",
+    anchorRepos: ["remix-run/react-router", "remix-run/remix"],
+  },
+  {
+    login: "ryanflorence",
+    name: "Ryan Florence",
+    category: "React Router / Remix",
+    anchorRepos: ["remix-run/react-router", "remix-run/remix"],
+  },
+  {
+    login: "kentcdodds",
+    name: "Kent C. Dodds",
+    category: "Testing / React",
+    anchorRepos: [
+      "testing-library/react-testing-library",
+      "kentcdodds/testing-library-docs",
+    ],
+  },
+  {
+    login: "getify",
+    name: "Kyle Simpson",
+    category: "JavaScript",
+    anchorRepos: ["getify/You-Dont-Know-JS", "getify/Functional-Light-JS"],
+  },
+  {
+    login: "sindresorhus",
+    name: "Sindre Sorhus",
+    category: "JavaScript / OSS",
+    anchorRepos: ["sindresorhus/awesome", "sindresorhus/got", "sindresorhus/execa"],
+  },
+  {
+    login: "tj",
+    name: "TJ Holowaychuk",
+    category: "Node.js",
+    anchorRepos: ["expressjs/express", "tj/commander.js", "tj/node-progress"],
+  },
+  {
+    login: "isaacs",
+    name: "Isaac Z. Schlueter",
+    category: "npm / Node.js",
+    anchorRepos: ["npm/cli", "nodejs/node", "isaacs/node-glob"],
+  },
+  {
+    login: "mcollina",
+    name: "Matteo Collina",
+    category: "Node.js",
+    anchorRepos: ["fastify/fastify", "nodejs/node"],
+    notes: "Replaced the unavailable @substack account from the initial seed list.",
+  },
+  {
+    login: "feross",
+    name: "Feross Aboukhadijeh",
+    category: "JavaScript / WebTorrent",
+    anchorRepos: ["webtorrent/webtorrent", "standard/standard", "feross/simple-peer"],
+  },
+  {
+    login: "paulirish",
+    name: "Paul Irish",
+    category: "Web Performance",
+    anchorRepos: ["GoogleChrome/lighthouse", "h5bp/html5-boilerplate"],
+  },
+  {
+    login: "addyosmani",
+    name: "Addy Osmani",
+    category: "Web Performance",
+    anchorRepos: [
+      "GoogleChrome/lighthouse",
+      "addyosmani/essential-js-design-patterns",
+    ],
+  },
+  {
+    login: "mrdoob",
+    name: "Ricardo Cabello",
+    category: "Three.js",
+    anchorRepos: ["mrdoob/three.js"],
+  },
+  {
+    login: "jashkenas",
+    name: "Jeremy Ashkenas",
+    category: "JavaScript",
+    anchorRepos: [
+      "jashkenas/underscore",
+      "jashkenas/backbone",
+      "jashkenas/coffeescript",
+    ],
+  },
+  {
+    login: "jdalton",
+    name: "John-David Dalton",
+    category: "JavaScript",
+    anchorRepos: ["lodash/lodash"],
+  },
+  {
+    login: "evanw",
+    name: "Evan Wallace",
+    category: "Build Tools",
+    anchorRepos: ["evanw/esbuild"],
+  },
+  {
+    login: "antfu",
+    name: "Anthony Fu",
+    category: "Vue / Vite",
+    anchorRepos: ["antfu/ni", "unocss/unocss", "vitejs/vite"],
+  },
+  {
+    login: "pi0",
+    name: "Pooya Parsa",
+    category: "Nuxt",
+    anchorRepos: ["nuxt/nuxt", "unjs/nitro"],
+  },
+  {
+    login: "tannerlinsley",
+    name: "Tanner Linsley",
+    category: "TanStack",
+    anchorRepos: ["TanStack/query", "TanStack/table", "TanStack/router"],
+  },
+  {
+    login: "colinhacks",
+    name: "Colin McDonnell",
+    category: "TypeScript",
+    anchorRepos: ["colinhacks/zod"],
+  },
+  {
+    login: "rauchg",
+    name: "Guillermo Rauch",
+    category: "Vercel / Next.js",
+    anchorRepos: ["vercel/next.js", "socketio/socket.io"],
+  },
+  {
+    login: "timneutkens",
+    name: "Tim Neutkens",
+    category: "Next.js",
+    anchorRepos: ["vercel/next.js"],
+  },
+  {
+    login: "shadcn",
+    name: "shadcn",
+    category: "UI",
+    anchorRepos: ["shadcn-ui/ui"],
+  },
+  {
+    login: "mitsuhiko",
+    name: "Armin Ronacher",
+    category: "Python / Flask",
+    anchorRepos: ["pallets/flask", "pallets/jinja", "pallets/werkzeug"],
+  },
+  {
+    login: "kennethreitz",
+    name: "Kenneth Reitz",
+    category: "Python",
+    anchorRepos: ["psf/requests", "kennethreitz/requests"],
+  },
+  {
+    login: "tiangolo",
+    name: "Sebastián Ramírez",
+    category: "Python / FastAPI",
+    anchorRepos: ["fastapi/fastapi", "fastapi/sqlmodel"],
+  },
+  {
+    login: "samuelcolvin",
+    name: "Samuel Colvin",
+    category: "Python / Pydantic",
+    anchorRepos: ["pydantic/pydantic"],
+  },
+  {
+    login: "zzzeek",
+    name: "Mike Bayer",
+    category: "Python / SQLAlchemy",
+    anchorRepos: ["sqlalchemy/sqlalchemy", "sqlalchemy/alembic"],
+  },
+  {
+    login: "fabpot",
+    name: "Fabien Potencier",
+    category: "PHP / Symfony",
+    anchorRepos: ["symfony/symfony", "twigphp/Twig"],
+  },
+  {
+    login: "taylorotwell",
+    name: "Taylor Otwell",
+    category: "PHP / Laravel",
+    anchorRepos: ["laravel/framework", "laravel/laravel"],
+  },
+  {
+    login: "rasmus",
+    name: "Rasmus Lerdorf",
+    category: "PHP",
+    anchorRepos: ["php/php-src"],
+  },
+  {
+    login: "nikic",
+    name: "Nikita Popov",
+    category: "PHP",
+    anchorRepos: ["php/php-src", "nikic/PHP-Parser"],
+  },
+  {
+    login: "bradfitz",
+    name: "Brad Fitzpatrick",
+    category: "Go",
+    anchorRepos: ["golang/go", "bradfitz/gomemcache"],
+  },
+  {
+    login: "rsc",
+    name: "Russ Cox",
+    category: "Go",
+    anchorRepos: ["golang/go", "golang/vgo"],
+  },
+  {
+    login: "robpike",
+    name: "Rob Pike",
+    category: "Go",
+    anchorRepos: ["golang/go"],
+  },
+  {
+    login: "davecheney",
+    name: "Dave Cheney",
+    category: "Go",
+    anchorRepos: ["golang/go", "davecheney/httpstat"],
+  },
+  {
+    login: "spf13",
+    name: "Steve Francia",
+    category: "Go",
+    anchorRepos: ["spf13/cobra", "spf13/viper", "gohugoio/hugo"],
+  },
+  {
+    login: "mitchellh",
+    name: "Mitchell Hashimoto",
+    category: "DevOps / HashiCorp",
+    anchorRepos: [
+      "hashicorp/terraform",
+      "hashicorp/vagrant",
+      "mitchellh/mapstructure",
+    ],
+  },
+  {
+    login: "antirez",
+    name: "Salvatore Sanfilippo",
+    category: "Databases / Redis",
+    anchorRepos: ["redis/redis", "antirez/redis"],
+  },
+  {
+    login: "kelseyhightower",
+    name: "Kelsey Hightower",
+    category: "Kubernetes",
+    anchorRepos: ["kelseyhightower/kubernetes-the-hard-way", "kubernetes/kubernetes"],
+  },
+];

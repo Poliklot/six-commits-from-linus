@@ -1,0 +1,32 @@
+{
+  "name": "six-commits-from-linus",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Find how many open-source degrees separate you from famous GitHub developers.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "build:index": "node --import tsx scripts/build-famous-index.ts",
+    "validate:famous": "node --import tsx scripts/validate-famous-devs.ts",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "vite": "latest",
+    "typescript": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "globals": "latest",
+    "tsx": "latest",
+    "typescript-eslint": "latest"
+  }
+}
