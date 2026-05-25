@@ -11,6 +11,7 @@ Six Commits from Linus is a static GitHub Pages app for exploring public reposit
 The first MVP only searched a small target list. The current version is built for a stronger demo and GitHub Developer Program submission:
 
 - **Power Mode:** add a repo you contributed to, for example `prettier/prettier`.
+- **Profile Scan:** username-only search looks for public merged PRs by that GitHub login and checks those repositories against the cached graph.
 - **Closest mode:** find the closest notable developers instead of picking one target first.
 - **Expanded graph:** 85 notable developers, 98 bridge repositories, and 150+ indexed public repositories.
 - **Prettier case:** includes `prettier/prettier` and Prettier ecosystem targets such as `@vjeux`, `@fisker`, `@sosukesuzuki`, and `@jlongster`.
@@ -28,6 +29,7 @@ GitHub Actions
 ```
 
 A connection exists when two users appear in the same public repository contributor graph.
+For username-only searches, the frontend also asks GitHub's public issue search for merged PRs authored by that login, extracts repository names, and tries those repositories against the static graph.
 
 Example:
 
@@ -49,7 +51,14 @@ Or through a bridge contributor:
 
 ## Why repo hints matter
 
-GitHub does not provide a perfect public endpoint for “all repositories this user has ever contributed to.” Without OAuth, the app can only do a best-effort username scan.
+GitHub does not provide a perfect public endpoint for “all repositories this user has ever contributed to.” Without OAuth, the app can only do a best-effort username scan:
+
+```text
+GitHub username
+  -> public merged PR search
+  -> cached repo contributor graph
+  -> closest notable developer
+```
 
 Repo hints make the graph much sharper:
 
@@ -145,7 +154,7 @@ This is an approximation. It uses public repository contributor data and does no
 - private repositories;
 - OAuth-authenticated user data;
 - pull request reviews;
-- issues;
+- non-PR issues;
 - stars;
 - followers;
 - full GitHub graph search.

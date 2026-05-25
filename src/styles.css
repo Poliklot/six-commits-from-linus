@@ -110,7 +110,8 @@ main {
 }
 
 .hero__actions span,
-.confidence {
+.confidence,
+.signal-badge {
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 8px 12px;
@@ -338,6 +339,19 @@ main {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+}
+
+.result-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.signal-badge {
+  color: #bfdbfe;
+  border-color: rgba(56, 189, 248, 0.32);
+  background: rgba(56, 189, 248, 0.1);
 }
 
 .confidence--strong,

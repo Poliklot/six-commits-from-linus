@@ -73,7 +73,7 @@ export type HandshakeMatch = {
   confidence: Confidence;
   path: PathNode[];
   explanation: string;
-  source: "target" | "closest" | "repo-hint" | "cached-index";
+  source: "target" | "closest" | "repo-hint" | "profile-scan" | "cached-index";
   verifiedUserInRepo?: boolean;
 };
 

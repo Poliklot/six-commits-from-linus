@@ -36,8 +36,9 @@ export function App() {
           <p className="eyebrow">Open-source social graph</p>
           <h1>Six Commits from Linus</h1>
           <p className="hero__subtitle">
-            Discover how your public GitHub contribution trail connects to maintainers,
-            language creators, framework authors, and developer-tool builders.
+            Scan public merged pull requests and contributor graphs to see how your
+            GitHub trail connects to maintainers, language creators, framework authors,
+            and developer-tool builders.
           </p>
           <div className="hero__actions" aria-label="Project facts">
             <span>{FAMOUS_DEVS.length} notable developers</span>
@@ -74,11 +75,11 @@ strong signal`}</pre>
         </div>
         <div>
           <strong>Public data only</strong>
-          <span>Uses repository contributors from the GitHub REST API.</span>
+          <span>Uses public PR search and repository contributors from GitHub REST API.</span>
         </div>
         <div>
-          <strong>Repo hints</strong>
-          <span>Paste a repo you touched to get sharper, more explainable paths.</span>
+          <strong>Profile Scan</strong>
+          <span>Finds merged public PRs first; repo hints still give the sharpest path.</span>
         </div>
       </section>
 
@@ -86,24 +87,26 @@ strong signal`}</pre>
         <article>
           <h2>How it works</h2>
           <p>
-            The app indexes public contributors from high-signal open-source repositories,
-            then searches for paths between your GitHub login and notable developers.
+            The app indexes public contributors from high-signal open-source repositories.
+            For username-only searches, it also scans public merged pull requests authored
+            by that GitHub login and matches those repositories against the graph.
           </p>
         </article>
         <article>
-          <h2>Why repo hints help</h2>
+          <h2>Why repo hints still help</h2>
           <p>
-            GitHub does not expose a perfect public endpoint for every repository someone
-            has contributed to. A repo hint lets the graph start from a known project like
-            <code> prettier/prettier</code> or <code>vitejs/vite</code>.
+            GitHub does not expose a perfect public endpoint for every contribution. A
+            repo hint lets the graph start from a known project like
+            <code> prettier/prettier</code> or <code>vitejs/vite</code> without spending
+            extra unauthenticated API quota.
           </p>
         </article>
         <article>
           <h2>Accuracy</h2>
           <p>
             Results are approximate and based on contributor windows returned by GitHub.
-            The app does not use private repositories, OAuth scopes, followers, stars,
-            issues, or pull request reviews.
+            The app does not use private repositories, OAuth scopes, followers, stars, or
+            pull request reviews.
           </p>
         </article>
       </section>

@@ -70,9 +70,9 @@ export function SearchForm({ famousDevs, onSearch, loading }: Props) {
     <form className="search-card" onSubmit={submit}>
       <div className="search-card__header">
         <p className="eyebrow">Public GitHub graph</p>
-        <h2>Start with a username. Add a repo hint for stronger results.</h2>
+        <h2>Start with a username. Profile Scan will look for public merged PRs.</h2>
         <p>
-          The strongest path comes from a repository you actually touched: a formatter,
+          If you also add a repo you touched, the search becomes deterministic: formatter,
           framework, runtime, docs repo, or any open-source project with public contributors.
         </p>
       </div>
@@ -126,8 +126,8 @@ export function SearchForm({ famousDevs, onSearch, loading }: Props) {
             onChange={(event) => setContributedRepo(event.target.value)}
           />
           <small>
-            Optional, but recommended. It turns the search from “best effort” into a
-            focused graph lookup.
+            Optional, but strongest. Without it, Profile Scan uses public merged PRs by
+            this username and checks them against the cached graph.
           </small>
         </label>
 
@@ -142,7 +142,7 @@ export function SearchForm({ famousDevs, onSearch, loading }: Props) {
       </div>
 
       <button className="primary-button" type="submit" disabled={loading}>
-        {loading ? "Searching public contributor graph…" : mode === "closest" ? "Find closest developers" : "Find this path"}
+        {loading ? "Scanning public contribution trail…" : mode === "closest" ? "Find closest developers" : "Find this path"}
       </button>
 
       <div className="example-row" aria-label="Example searches">

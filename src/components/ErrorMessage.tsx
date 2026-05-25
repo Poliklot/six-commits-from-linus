@@ -22,6 +22,7 @@ export function ErrorMessage({ title = "Something went wrong", message }: Props)
         <h2>{title}</h2>
         <p>{message}</p>
         <ul>
+          <li>Username-only mode scans merged public PRs, but GitHub may rate-limit it.</li>
           <li>Add a repository hint such as prettier/prettier or vitejs/vite.</li>
           <li>Try “Find closest” instead of targeting one developer.</li>
           <li>Remember: absence in this graph is not absence on GitHub.</li>

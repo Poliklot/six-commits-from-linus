@@ -28,6 +28,14 @@ function MatchRow({ match }: { match: HandshakeMatch }) {
   );
 }
 
+const SIGNAL_COPY: Record<HandshakeMatch["source"], string> = {
+  "cached-index": "cached graph",
+  closest: "owned repo scan",
+  "profile-scan": "public PR scan",
+  "repo-hint": "repo hint",
+  target: "target graph",
+};
+
 export function ResultCard({ result }: Props) {
   if (!result) {
     return (
@@ -43,8 +51,8 @@ export function ResultCard({ result }: Props) {
         </div>
         <h2>Map your public open-source distance</h2>
         <p>
-          Add a repository hint like <code>prettier/prettier</code> for the sharpest result,
-          or search by username only for a broader best-effort scan.
+          Search by username to scan merged public PRs, or add a repository hint like
+          <code> prettier/prettier</code> for the sharpest result.
         </p>
       </section>
     );
@@ -66,9 +74,12 @@ export function ResultCard({ result }: Props) {
     <section className="result-card" aria-live="polite">
       <div className="result-card__topline">
         <p className="eyebrow">{result.searchMode === "closest" ? "Closest match" : "Path found"}</p>
-        <span className={`confidence confidence--${result.confidence}`}>
-          {result.confidence} confidence
-        </span>
+        <div className="result-card__badges">
+          <span className="signal-badge">{SIGNAL_COPY[result.source]}</span>
+          <span className={`confidence confidence--${result.confidence}`}>
+            {result.confidence} confidence
+          </span>
+        </div>
       </div>
 
       <h2>
@@ -98,6 +109,13 @@ export function ResultCard({ result }: Props) {
         <p className="repo-hint-note">
           Repo hint mode: GitHub did not return the username in the checked contributor
           window. The path is useful for exploration, not proof of contribution.
+        </p>
+      )}
+
+      {result.source === "profile-scan" && (
+        <p className="repo-hint-note">
+          Profile Scan uses merged public PRs as the username signal, then matches those
+          repositories against the cached contributor graph.
         </p>
       )}
 

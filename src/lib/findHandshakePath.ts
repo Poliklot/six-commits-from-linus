@@ -8,6 +8,7 @@ import {
   isValidRepoFullName,
   normalizeLogin,
   normalizeRepoFullName,
+  searchUserPullRequestRepos,
 } from "./githubApi";
 import type {
   FamousIndex,
@@ -73,6 +74,14 @@ function getFamousDev(login: string) {
   return FAMOUS_DEVS.find((dev) => normalizeLogin(dev.login) === normalized);
 }
 
+function repoKey(repo: string): string {
+  return normalizeRepoFullName(repo).toLowerCase();
+}
+
+function sameRepo(left: string, right: string): boolean {
+  return repoKey(left) === repoKey(right);
+}
+
 function contributorsToIndexedRepo(
   contributors: GitHubContributor[],
   category = "Live repo hint",
@@ -86,7 +95,19 @@ function contributorsToIndexedRepo(
 }
 
 function repoContributors(index: FamousIndex, repo: string): IndexedRepo | undefined {
-  return index.repoToContributors?.[normalizeRepoFullName(repo)];
+  const repoToContributors = index.repoToContributors;
+  if (!repoToContributors) return undefined;
+
+  const normalized = normalizeRepoFullName(repo);
+  const exact = repoToContributors[normalized];
+  if (exact) return exact;
+
+  const normalizedKey = repoKey(normalized);
+  const matchingKey = Object.keys(repoToContributors).find(
+    (candidateRepo) => repoKey(candidateRepo) === normalizedKey,
+  );
+
+  return matchingKey ? repoToContributors[matchingKey] : undefined;
 }
 
 function findDirectCachedCandidates(
@@ -176,7 +197,7 @@ function buildCandidatesFromRepo(
 
     const targetIsOnRepo =
       contributorSet.has(normalizedTarget) ||
-      Object.keys(target.repos).map(normalizeRepoFullName).includes(normalizeRepoFullName(repo));
+      Object.keys(target.repos).some((targetRepo) => sameRepo(targetRepo, repo));
 
     if (targetIsOnRepo) {
       candidates.push({
@@ -195,7 +216,9 @@ function buildCandidatesFromRepo(
         userRepoStars: userRepo?.stargazers_count,
         explanation: verifiedUserInRepo === false
           ? `Using your ${repo} repo hint, @${target.login} is a known contributor or anchor target for that repository. We did not see @${fromLogin} in the returned contributor window, so treat this as a repo-hint connection.`
-          : `@${fromLogin} and @${target.login} connect through ${repo}.`,
+          : source === "profile-scan"
+            ? `Profile Scan found a merged public pull request by @${fromLogin} in ${repo}. @${target.login} is also connected to that repository in the cached graph.`
+            : `@${fromLogin} and @${target.login} connect through ${repo}.`,
         source,
         verifiedUserInRepo,
         confidenceOverride: verifiedUserInRepo === false ? "weak" : undefined,
@@ -211,7 +234,7 @@ function buildCandidatesFromRepo(
     for (const entry of famousRepoEntries) {
       const target = index.famous[normalizeLogin(entry.famousLogin)];
       if (!target || normalizeLogin(target.login) === normalizedFrom) continue;
-      if (normalizeRepoFullName(entry.repo) === normalizeRepoFullName(repo)) continue;
+      if (sameRepo(entry.repo, repo)) continue;
 
       const famousRepoIndex = target.repos[entry.repo] ?? repoContributors(index, entry.repo);
       candidates.push({
@@ -232,7 +255,9 @@ function buildCandidatesFromRepo(
         userRepoStars: userRepo?.stargazers_count,
         explanation: verifiedUserInRepo === false
           ? `Using your ${repo} repo hint, @${contributorLogin} bridges to @${target.login} through ${entry.repo}. We did not see @${fromLogin} in the returned contributor window, so treat this as a repo-hint connection.`
-          : `@${fromLogin} connects to @${target.login} through @${contributorLogin}: ${repo} → ${entry.repo}.`,
+          : source === "profile-scan"
+            ? `Profile Scan found a merged public pull request by @${fromLogin} in ${repo}. @${contributorLogin} bridges that repo to @${target.login} through ${entry.repo}.`
+            : `@${fromLogin} connects to @${target.login} through @${contributorLogin}: ${repo} → ${entry.repo}.`,
         source,
         verifiedUserInRepo,
         confidenceOverride: verifiedUserInRepo === false ? "weak" : undefined,
@@ -248,7 +273,7 @@ function dedupeAndSortCandidates(candidates: Candidate[]): Candidate[] {
 
   for (const candidate of candidates) {
     const signature = `${normalizeLogin(candidate.targetLogin)}::${candidate.path
-      .map((node) => (node.type === "user" ? `u:${normalizeLogin(node.login)}` : `r:${normalizeRepoFullName(node.fullName)}`))
+      .map((node) => (node.type === "user" ? `u:${normalizeLogin(node.login)}` : `r:${repoKey(node.fullName)}`))
       .join("|")}`;
     const existing = bySignature.get(signature);
     if (!existing || compareCandidates(candidate, existing) < 0) {
@@ -287,6 +312,13 @@ function uniqueBestByTarget(candidates: Candidate[]): Candidate[] {
     if (!byTarget.has(key)) byTarget.set(key, candidate);
   }
   return Array.from(byTarget.values()).sort(compareCandidates);
+}
+
+function hasSearchMatch(candidates: Candidate[], targetDev?: { login: string }): boolean {
+  if (!targetDev) return candidates.length > 0;
+  return candidates.some(
+    (candidate) => normalizeLogin(candidate.targetLogin) === normalizeLogin(targetDev.login),
+  );
 }
 
 function candidateToMatch(candidate: Candidate): HandshakeMatch {
@@ -414,6 +446,32 @@ async function candidatesFromRepoHint(
   });
 }
 
+async function candidatesFromProfileScan(
+  fromLogin: string,
+  index: FamousIndex,
+): Promise<Candidate[]> {
+  const repos = await searchUserPullRequestRepos(fromLogin);
+  const candidates: Candidate[] = [];
+
+  for (const repo of repos) {
+    const repoIndex = repoContributors(index, repo);
+    if (!repoIndex) continue;
+
+    candidates.push(
+      ...buildCandidatesFromRepo({
+        fromLogin,
+        repo,
+        repoIndex,
+        index,
+        source: "profile-scan",
+        verifiedUserInRepo: true,
+      }),
+    );
+  }
+
+  return candidates;
+}
+
 async function candidatesFromUserRepos(fromLogin: string, index: FamousIndex): Promise<Candidate[]> {
   const repos = sortUserRepos(await getUserRepos(fromLogin));
   const candidates: Candidate[] = [];
@@ -479,8 +537,7 @@ export async function searchHandshake(options: HandshakeSearchOptions): Promise<
   try {
     const index = await loadFamousIndex();
     const hasRepoHint = Boolean(options.contributedRepo?.trim());
-    const user = hasRepoHint ? { login: fromLogin } : await getUser(fromLogin);
-    const displayLogin = user.login;
+    const displayLogin = fromLogin;
     const candidates: Candidate[] = [];
 
     candidates.push(...findDirectCachedCandidates(displayLogin, index));
@@ -499,10 +556,22 @@ export async function searchHandshake(options: HandshakeSearchOptions): Promise<
       }
     }
 
-    if (options.contributedRepo?.trim()) {
-      candidates.push(...(await candidatesFromRepoHint(displayLogin, options.contributedRepo, index)));
+    if (hasRepoHint) {
+      candidates.push(...(await candidatesFromRepoHint(displayLogin, options.contributedRepo ?? "", index)));
     } else {
-      candidates.push(...(await candidatesFromUserRepos(displayLogin, index)));
+      if (!hasSearchMatch(candidates, targetDev)) {
+        try {
+          candidates.push(...(await candidatesFromProfileScan(displayLogin, index)));
+        } catch {
+          // Profile Scan is a convenience layer over GitHub public PR search. If that
+          // endpoint is temporarily limited, keep going with cached/owned-repo signals.
+        }
+      }
+
+      if (!hasSearchMatch(candidates, targetDev)) {
+        const user = await getUser(fromLogin);
+        candidates.push(...(await candidatesFromUserRepos(user.login, index)));
+      }
     }
 
     const filtered = targetDev

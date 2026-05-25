@@ -52,6 +52,22 @@ export function isLikelyBot(login: string): boolean {
   );
 }
 
+type GitHubSearchResponse<T> = {
+  total_count: number;
+  incomplete_results: boolean;
+  items: T[];
+};
+
+type GitHubPullRequestSearchItem = {
+  html_url: string;
+  repository_url: string;
+  title: string;
+  state: string;
+  created_at: string;
+  updated_at: string;
+  pull_request?: unknown;
+};
+
 async function githubRequest<T>(path: string): Promise<T> {
   const url = path.startsWith("http") ? path : `${GITHUB_API_BASE}${path}`;
 
@@ -142,4 +158,40 @@ export async function getRepoContributors(
   }
 
   return contributors;
+}
+
+export async function searchUserPullRequestRepos(
+  username: string,
+  maxRepos = 24,
+): Promise<string[]> {
+  const login = normalizeLogin(username);
+  const query = encodeURIComponent(`is:pr is:merged author:${login}`);
+  const response = await githubRequest<GitHubSearchResponse<GitHubPullRequestSearchItem>>(
+    `/search/issues?q=${query}&sort=updated&order=desc&per_page=50`,
+  );
+  const repos: string[] = [];
+  const seen = new Set<string>();
+
+  for (const item of response.items) {
+    const fromApiUrl = item.repository_url
+      .replace(/^https:\/\/api\.github\.com\/repos\//i, "")
+      .trim();
+    const fromHtmlUrl = item.html_url
+      .replace(/^https:\/\/github\.com\//i, "")
+      .split("/")
+      .slice(0, 2)
+      .join("/");
+    const fullName = normalizeRepoFullName(fromApiUrl || fromHtmlUrl);
+    const dedupeKey = fullName.toLowerCase();
+
+    if (!isValidRepoFullName(fullName)) continue;
+    if (seen.has(dedupeKey)) continue;
+
+    seen.add(dedupeKey);
+    repos.push(fullName);
+
+    if (repos.length >= maxRepos) break;
+  }
+
+  return repos;
 }
