@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#111612" stroke-opacity=".07"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#17251d" flood-opacity=".2"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="#f2f5f0"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <g transform="translate(68 54)">
+    <rect width="36" height="36" rx="10" fill="#111612"/>
+    <path d="M9 18h18" stroke="#607168"/>
+    <circle cx="10" cy="18" r="3" fill="#e3ebff" stroke="#1d4ed8" stroke-width="2"/>
+    <circle cx="18" cy="18" r="3.5" fill="#ddf5e5" stroke="#23a65b" stroke-width="2"/>
+    <circle cx="26" cy="18" r="3" fill="#ffebe5" stroke="#e85d3f" stroke-width="2"/>
+    <text x="50" y="24" fill="#111612" font-family="Helvetica Neue, Arial, sans-serif" font-size="20" font-weight="700">Six Commits <tspan fill="#66736c" font-weight="500">from Linus</tspan></text>
+  </g>
+
+  <text x="68" y="170" fill="#1d4ed8" font-family="Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3">OPEN-SOURCE SOCIAL DISTANCE</text>
+  <text x="68" y="244" fill="#111612" font-family="Helvetica Neue, Arial, sans-serif" font-size="64" font-weight="700" letter-spacing="-3">Find your shortest line</text>
+  <text x="68" y="316" fill="#1d4ed8" font-family="Helvetica Neue, Arial, sans-serif" font-size="64" font-weight="700" letter-spacing="-3">through open source.</text>
+  <text x="68" y="370" fill="#4e5b54" font-family="Helvetica Neue, Arial, sans-serif" font-size="22">Trace public GitHub signals to the people</text>
+  <text x="68" y="402" fill="#4e5b54" font-family="Helvetica Neue, Arial, sans-serif" font-size="22">who shaped modern software.</text>
+
+  <g transform="translate(68 460)" font-family="Menlo, monospace">
+    <path d="M0 0h500" stroke="#aebbb2"/>
+    <text y="42" fill="#111612" font-size="23" font-weight="700">85</text>
+    <text x="170" y="42" fill="#111612" font-size="23" font-weight="700">155</text>
+    <text x="340" y="42" fill="#111612" font-size="23" font-weight="700">98</text>
+    <text y="66" fill="#66736c" font-size="11">NOTABLE DEVELOPERS</text>
+    <text x="170" y="66" fill="#66736c" font-size="11">INDEXED REPOS</text>
+    <text x="340" y="66" fill="#66736c" font-size="11">BRIDGE REPOS</text>
+  </g>
+
+  <g transform="translate(718 112) rotate(2 205 180)" filter="url(#shadow)">
+    <rect width="414" height="374" rx="26" fill="#111612" stroke="#2f3b34"/>
+    <circle cx="24" cy="25" r="5" fill="#23a65b"/>
+    <text x="39" y="30" fill="#aeb9b2" font-family="Helvetica Neue, Arial, sans-serif" font-size="12">Example route</text>
+    <text x="284" y="30" fill="#8fafef" font-family="Menlo, monospace" font-size="11">shortest_path()</text>
+    <path d="M22 48h370" stroke="#303b35"/>
+    <path d="M82 116C142 150 166 186 214 210S290 234 338 273" fill="none" stroke="#7197ff" stroke-width="4" stroke-dasharray="8 7"/>
+    <path d="M84 116c110-48 178-31 258-4M214 210c46-59 93-71 148-55M214 210c27 71 54 87 105 101" fill="none" stroke="#3e4a43" stroke-width="2" stroke-dasharray="5 6"/>
+
+    <g transform="translate(40 82)">
+      <rect width="116" height="62" rx="13" fill="#f6f8f3" stroke="#ccd7ce"/>
+      <circle cx="21" cy="22" r="6" fill="#1d4ed8"/>
+      <text x="35" y="27" fill="#111612" font-family="Menlo, monospace" font-size="13" font-weight="700">@you</text>
+      <text x="15" y="48" fill="#66736c" font-family="Menlo, monospace" font-size="7" letter-spacing="1">PUBLIC PROFILE</text>
+    </g>
+    <g transform="translate(150 177)">
+      <rect width="150" height="62" rx="13" fill="#ddf5e5" stroke="#68c98e"/>
+      <text x="15" y="28" fill="#111612" font-family="Menlo, monospace" font-size="12" font-weight="700">prettier/prettier</text>
+      <text x="15" y="49" fill="#66736c" font-family="Menlo, monospace" font-size="7" letter-spacing="1">MERGED PR</text>
+    </g>
+    <g transform="translate(290 246)">
+      <rect width="98" height="62" rx="13" fill="#e3ebff" stroke="#7598ef"/>
+      <circle cx="19" cy="22" r="6" fill="#e85d3f"/>
+      <text x="33" y="27" fill="#111612" font-family="Menlo, monospace" font-size="12" font-weight="700">@vjeux</text>
+      <text x="13" y="48" fill="#66736c" font-family="Menlo, monospace" font-size="7" letter-spacing="1">1 LINK AWAY</text>
+    </g>
+    <path d="M22 330h370" stroke="#303b35"/>
+    <circle cx="26" cy="352" r="4" fill="#7197ff"/>
+    <text x="38" y="356" fill="#aeb9b2" font-family="Menlo, monospace" font-size="8" letter-spacing="1">VERIFIED ROUTE</text>
+    <text x="278" y="356" fill="#ffffff" font-family="Menlo, monospace" font-size="8" font-weight="700" letter-spacing="1">1 CONTRIBUTOR LINK</text>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+{
+  "name": "Six Commits from Linus",
+  "short_name": "Six Commits",
+  "description": "Trace public GitHub contribution routes to notable open-source developers.",
+  "start_url": "/six-commits-from-linus/",
+  "display": "standalone",
+  "background_color": "#f2f5f0",
+  "theme_color": "#111612",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 {
   "name": "six-commits-from-linus",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Find how many open-source degrees separate you from famous GitHub developers.",
+  "description": "Trace public GitHub contribution routes to notable open-source developers.",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

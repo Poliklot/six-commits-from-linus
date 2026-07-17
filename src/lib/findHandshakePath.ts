@@ -421,9 +421,8 @@ async function candidatesFromRepoHint(
 
   let repoIndex = repoContributors(index, repo);
 
-  // Important for GitHub Pages: if the repo is already in the static graph, do not
-  // spend the user's unauthenticated API quota. Live fetching is only a fallback for
-  // custom repositories that are not cached yet.
+  // Contributor fetching is only a fallback for custom repositories. Cached hints do
+  // not spend core API quota.
   if (!repoIndex) {
     const liveContributors = await getRepoContributors(repo, POWER_REPO_CONTRIBUTOR_PAGES);
     if (liveContributors.length > 0) {
@@ -435,13 +434,32 @@ async function candidatesFromRepoHint(
     return [];
   }
 
-  const verifiedUserInRepo = repoIndex.contributors.map(normalizeLogin).includes(normalizeLogin(fromLogin));
+  let verifiedUserInRepo = repoIndex.contributors
+    .map(normalizeLogin)
+    .includes(normalizeLogin(fromLogin));
+  let source: Candidate["source"] = "repo-hint";
+
+  // A contributor window can miss a real contribution. When that happens, make one
+  // best-effort PR search and upgrade the evidence if GitHub shows a merged PR in the
+  // hinted repository. Search limits never block the cached repo-hint result.
+  if (!verifiedUserInRepo) {
+    try {
+      const mergedPullRequestRepos = await searchUserPullRequestRepos(fromLogin);
+      if (mergedPullRequestRepos.some((pullRequestRepo) => sameRepo(pullRequestRepo, repo))) {
+        verifiedUserInRepo = true;
+        source = "profile-scan";
+      }
+    } catch {
+      // Keep the weaker cached repo-hint signal when public search is unavailable.
+    }
+  }
+
   return buildCandidatesFromRepo({
     fromLogin,
     repo,
     repoIndex,
     index,
-    source: "repo-hint",
+    source,
     verifiedUserInRepo,
   });
 }

@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { FamousDev } from "../data/famous-devs";
 
 type Props = {
@@ -17,26 +18,30 @@ function groupByCategory(famousDevs: FamousDev[]): Map<string, FamousDev[]> {
 }
 
 export function FamousSelect({ famousDevs, value, onChange, disabled }: Props) {
+  const selectId = useId();
   const groups = groupByCategory(famousDevs);
 
   return (
-    <label className="field">
-      <span>Famous developer</span>
-      <select
-        value={value}
-        disabled={disabled}
-        onChange={(event) => onChange(event.target.value)}
-      >
-        {Array.from(groups.entries()).map(([category, devs]) => (
-          <optgroup key={category} label={category}>
-            {devs.map((dev) => (
-              <option key={dev.login} value={dev.login}>
-                {dev.name} — @{dev.login}
-              </option>
-            ))}
-          </optgroup>
-        ))}
-      </select>
+    <label className="field field--target" htmlFor={selectId}>
+      <span className="field__label"><b>03</b> Target developer</span>
+      <div className="input-shell input-shell--select">
+        <select
+          id={selectId}
+          value={value}
+          disabled={disabled}
+          onChange={(event) => onChange(event.target.value)}
+        >
+          {Array.from(groups.entries()).map(([category, devs]) => (
+            <optgroup key={category} label={category}>
+              {devs.map((dev) => (
+                <option key={dev.login} value={dev.login}>
+                  {dev.name} — @{dev.login}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+      </div>
     </label>
   );
 }
