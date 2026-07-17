@@ -291,6 +291,19 @@ function compareCandidates(a: Candidate, b: Candidate): number {
   const verifiedDiff = Number(b.verifiedUserInRepo === true) - Number(a.verifiedUserInRepo === true);
   if (verifiedDiff !== 0) return verifiedDiff;
 
+  // Prefer a public merged-PR match over an otherwise identical cached edge. The
+  // cached graph is fast, while Profile Scan is the stronger explanation when it
+  // is available.
+  const evidenceRank: Record<Candidate["source"], number> = {
+    "profile-scan": 0,
+    closest: 1,
+    target: 2,
+    "repo-hint": 3,
+    "cached-index": 4,
+  };
+  const evidenceDiff = evidenceRank[a.source] - evidenceRank[b.source];
+  if (evidenceDiff !== 0) return evidenceDiff;
+
   const maxA = Math.max(a.userRepoContributorsCount, a.famousRepoContributorsCount);
   const maxB = Math.max(b.userRepoContributorsCount, b.famousRepoContributorsCount);
   const sizeDiff = maxA - maxB;
@@ -439,19 +452,18 @@ async function candidatesFromRepoHint(
     .includes(normalizeLogin(fromLogin));
   let source: Candidate["source"] = "repo-hint";
 
-  // A contributor window can miss a real contribution. When that happens, make one
-  // best-effort PR search and upgrade the evidence if GitHub shows a merged PR in the
-  // hinted repository. Search limits never block the cached repo-hint result.
-  if (!verifiedUserInRepo) {
-    try {
-      const mergedPullRequestRepos = await searchUserPullRequestRepos(fromLogin);
-      if (mergedPullRequestRepos.some((pullRequestRepo) => sameRepo(pullRequestRepo, repo))) {
-        verifiedUserInRepo = true;
-        source = "profile-scan";
-      }
-    } catch {
-      // Keep the weaker cached repo-hint signal when public search is unavailable.
+  // A cached contributor edge is useful, but a merged public PR is stronger and
+  // easier to explain. Make one best-effort search for every explicit repo hint and
+  // upgrade the evidence when GitHub confirms it. Search limits never block the
+  // cached repo-hint result.
+  try {
+    const mergedPullRequestRepos = await searchUserPullRequestRepos(fromLogin);
+    if (mergedPullRequestRepos.some((pullRequestRepo) => sameRepo(pullRequestRepo, repo))) {
+      verifiedUserInRepo = true;
+      source = "profile-scan";
     }
+  } catch {
+    // Keep the cached contributor or weaker repo-hint signal when search is unavailable.
   }
 
   return buildCandidatesFromRepo({
