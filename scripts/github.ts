@@ -114,7 +114,7 @@ export async function getRepoContributors(
     );
 
     for (const contributor of pageContributors) {
-      if (!contributor.login || isLikelyBot(contributor.login)) continue;
+      if (!contributor.login || isLikelyBot(contributor.login, contributor.type)) continue;
       const key = normalizeContributorLogin(contributor.login);
       if (seen.has(key)) continue;
       seen.add(key);

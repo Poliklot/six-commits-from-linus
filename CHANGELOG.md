@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.1 — 2026-10-07
+
+### Fixed
+
+- Excluded `codex`, `copilot`, and `cursoragent` from contributor paths using a shared exact-login denylist.
+- Honored GitHub's bot account metadata in both live API requests and index generation.
+- Removed known agents from the shipped index and filtered older cached graphs on load, including reverse mappings and contributor counts.
+- Rejected known bot accounts as starting users with an explanatory message.
+
+### Verified
+
+- 16 regression tests covering cached and live routes, target and closest modes, profile scans, pagination, and preserved human paths.
+- TypeScript production build and ESLint.
+- Regression tests now run before deployment and scheduled index refreshes.
+
+Thanks to [Grigory Dubrovin (@wackywildoak)](https://github.com/wackywildoak) for reporting the AI-agent shortcut problem.
+
 ## 1.0.0 — 2026-07-17
 
 First showcase release.

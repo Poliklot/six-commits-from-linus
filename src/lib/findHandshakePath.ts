@@ -1,10 +1,12 @@
 import { FAMOUS_DEVS } from "../data/famous-devs";
 import { calculateConfidence } from "./confidence";
+import { excludeBotsFromIndex } from "./famousIndex";
 import {
   getRepoContributors,
   getUser,
   getUserRepos,
   GitHubApiError,
+  isLikelyBot,
   isValidRepoFullName,
   normalizeLogin,
   normalizeRepoFullName,
@@ -34,9 +36,10 @@ const NOT_FOUND_COPY =
 
 const MAX_CLOSEST_RESULTS = 8;
 const POWER_REPO_CONTRIBUTOR_PAGES = 3;
+const BOT_ACCOUNT_MESSAGE = "Bot and AI coding-agent accounts are excluded. Enter a human GitHub username.";
 
 function publicDataUrl(fileName: string): string {
-  const base = import.meta.env.BASE_URL || "/";
+  const base = import.meta.env?.BASE_URL || "/";
   return `${base}${fileName}`.replace(/\/\//g, "/");
 }
 
@@ -51,7 +54,7 @@ async function loadFamousIndex(): Promise<FamousIndex> {
     );
   }
 
-  return (await response.json()) as FamousIndex;
+  return excludeBotsFromIndex((await response.json()) as FamousIndex);
 }
 
 function repoPushedAtTime(repo: Pick<GitHubRepo, "pushed_at">): number {
@@ -412,6 +415,10 @@ function validateUsername(fromLogin: string): HandshakeResult | null {
     return { status: "error", message: "Enter a GitHub username first." };
   }
 
+  if (isLikelyBot(fromLogin)) {
+    return { status: "error", message: BOT_ACCOUNT_MESSAGE };
+  }
+
   if (!/^[a-z0-9](?:[a-z0-9-]{0,37}[a-z0-9])?$/i.test(fromLogin)) {
     return {
       status: "error",
@@ -600,6 +607,9 @@ export async function searchHandshake(options: HandshakeSearchOptions): Promise<
 
       if (!hasSearchMatch(candidates, targetDev)) {
         const user = await getUser(fromLogin);
+        if (isLikelyBot(user.login, user.type)) {
+          return { status: "error", message: BOT_ACCOUNT_MESSAGE };
+        }
         candidates.push(...(await candidatesFromUserRepos(user.login, index)));
       }
     }

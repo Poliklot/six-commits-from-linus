@@ -1,6 +1,6 @@
 {
   "name": "six-commits-from-linus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "description": "Trace public GitHub contribution routes to notable open-source developers.",
@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "build:index": "node --import tsx scripts/build-famous-index.ts",
     "validate:famous": "node --import tsx scripts/validate-famous-devs.ts",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --import tsx --test tests/*.test.ts"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

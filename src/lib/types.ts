@@ -2,6 +2,7 @@ export type Confidence = "strong" | "medium" | "weak";
 
 export type GitHubUser = {
   login: string;
+  type?: string;
   id: number;
   html_url: string;
 };
@@ -18,6 +19,7 @@ export type GitHubRepo = {
 
 export type GitHubContributor = {
   login: string;
+  type?: string;
   id: number;
   contributions: number;
   html_url: string;

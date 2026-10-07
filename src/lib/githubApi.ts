@@ -41,14 +41,18 @@ export function isValidRepoFullName(repo: string): boolean {
   return /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repo);
 }
 
-export function isLikelyBot(login: string): boolean {
-  const normalized = login.toLowerCase();
+// These coding agents do not consistently expose a Bot type or a bot suffix.
+// Match exact logins: a human username containing "codex" or "copilot" is not a bot.
+const BOT_LOGINS = new Set(["codex", "copilot", "cursoragent", "dependabot", "renovate"]);
+
+export function isLikelyBot(login: string, accountType?: string): boolean {
+  const normalized = normalizeLogin(login);
   return (
+    accountType?.toLowerCase() === "bot" ||
+    BOT_LOGINS.has(normalized) ||
     normalized.includes("[bot]") ||
     normalized.endsWith("-bot") ||
-    normalized.endsWith("bot") ||
-    normalized === "dependabot" ||
-    normalized === "renovate"
+    normalized.endsWith("bot")
   );
 }
 
@@ -147,7 +151,7 @@ export async function getRepoContributors(
     );
 
     for (const contributor of pageContributors) {
-      if (!contributor.login || isLikelyBot(contributor.login)) continue;
+      if (!contributor.login || isLikelyBot(contributor.login, contributor.type)) continue;
       const key = normalizeLogin(contributor.login);
       if (seen.has(key)) continue;
       seen.add(key);
